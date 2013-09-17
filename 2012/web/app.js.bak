@@ -1,0 +1,85 @@
+
+/**
+ * Module dependencies.
+ */
+
+var express = require('express')
+  , routes = require('./routes')
+  , http = require('http')
+  , path = require('path');
+
+var app = express();
+
+app.configure(function(){
+  app.set('port', process.env.PORT || 3000);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'public')));
+});
+
+app.configure('development', function(){
+  app.use(express.errorHandler());
+});
+
+//设置主页
+app.get('/', routes.index);
+//hello页面
+app.get('/hello',routes.hello);
+//把所有的请求方式绑定到同一个响应函数中
+
+var users = {
+	'allen':{
+		name:'allen',
+		websit:'www.allen.com'
+	}
+};
+
+var util = require('util');
+
+app.all('/user/:username',function(req,res,next){
+	//res.send('all methods captures');
+	//console.log('all methods captures');
+	//将控制权转移给下路由器，非常有用
+	//next();
+	//检测用户名是否存在
+	if(req.params.username){
+		next();
+	}else{
+		next(new Error(req.params.username+' does not exists.'));
+	}
+});
+
+//用户页面 
+app.get('/user/:username',function(req,res){
+	res.send('User: '+req.params.username);
+	//res.send(JSON.stringify(users[req.params.username]));
+});
+
+//静态视图助手
+//app.helpers({
+	//inspect:function(obj){
+		//return util.inspect(obj,true);
+	//}
+//});/
+
+//动态师徒助手
+//app.dynamicHelpers({
+	//headers:function(req,res){
+		//return req.headers;
+	//}
+//});
+
+app.get('/helper',function(req,res){
+	res.render('helper',{
+		title:'helpers'
+	});
+});
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
+});

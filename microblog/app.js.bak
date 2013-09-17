@@ -1,0 +1,116 @@
+
+/**
+ * Module dependencies.
+ */
+
+var express = require('express');
+var routes = require('./routes');
+var user = require('./routes/user');
+var http = require('http');
+var path = require('path');
+//引用util
+var util = require('util');
+var app = express();
+//需要额外require partials视图
+//partials需要额外安装
+var partials = require('express-partials'); 
+
+
+app.set('port', process.env.PORT || 3000);// all environments
+//以下两个语句设置页面模板的位置和模板模板引擎的的类型
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+//设置视图是否引用模板
+app.set('view options',{ 
+	layout: false 
+});
+
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+//启用partials视图
+//app.use(partials());需要放在 app.use(app.routes())之前。
+app.use(partials());
+app.use(app.router);
+//配置静态文件服务器
+app.use(express.static(path.join(__dirname, 'public')));
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}else{}
+
+//设置主页，也就是进入站点的默认页面
+app.get('/', routes.index);
+app.get('/', function(req,res){
+	res.send('FUCK YOUR SISTER!');
+	//这一个路由永远不会匹配，因为路由器会优先匹配先定义的
+	//除非使用next();释放控制权
+});
+
+//新增一个页面gettime
+app.get('/gettime', routes.gettime);
+
+//筛选路由
+var users = {
+	allen:{
+		name:'iverson',
+		website:"http://www.baidu.com"
+	}
+};
+//捕获所有请求使用app.all
+//实际上起到了中间件的作用
+app.all('/user/:username',function(req,res,next){
+	if(users[req.params.username]){
+		console.log('请走下一个路由器！');
+		next();
+	}else{
+		next(new Error(req.params.username + 'does not exists.'));
+	}
+});
+
+//设置一个路由规则，前面是/user/username
+app.get('/user/:username', function(req,res){
+	//res.send('user: '+ req.params.username);	
+	res.send(JSON.stringify(users[req.params.username]))
+	//send表示response对象发送内容到客户端
+});
+
+//
+app.get('/list',function(req,res){
+	res.render('list',{
+		title:'List',
+		items:[1992,'allen','express','nodejs']
+	});
+});
+
+//user.list中的user指的是routes下的文件名如user.js
+//user.list 指的是user.js内的exports.list
+app.get('/users', user.list);
+
+/*
+app.helpers({
+	inspect:function(obj){
+		return util.inspect(obj,true);
+	}
+});
+
+app.dynamicHelpers({
+	inspect:function(req,res){
+		return req.headers;
+	}
+});
+
+app.get('/helper',function(req,res){
+	res.render('helper',{
+		title:'HELPERS'
+	});
+});
+*/
+
+//创建服务器实例监听3000端口
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
