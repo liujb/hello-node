@@ -1,46 +1,3 @@
-
-// /*
-//  * GET home page.
-//  */
-
-// exports.index = function(req, res){
-//   res.render('index', { title: "Express EJS", name: "ALLEN" });
-//   //next();在这儿没用啊！
-// };
-
-// /*
-//  * 增加新的路由规则.
-//  */
-// exports.gettime = function(req, res){
-//   //res.render('index', { title: "Express EJS", name: "ALLEN" });
-//   res.send('This time is '+ new Date().toString());
-// };
-
-// exports.user = function(req,res){
-// 	res.send('user');
-// };
-// exports.post = function(req,res){
-// 	res.send('user');
-// };
-// exports.reg = function(req,res){
-// 	res.render('index',{title:'Register'})
-// 	//res.send('user');
-// };
-// exports.doReg = function(req,res){
-// 	res.send('user');
-// };
-// exports.login = function(req,res){
-// 	res.send('user');
-// };
-// exports.doLogin = function(req,res){
-// 	res.send('user');
-// };
-// exports.logout = function(req,res){
-// 	res.send('user');
-// };
-
-
-
 module.exports = function(app){
 
 	//获取首页
@@ -61,7 +18,7 @@ module.exports = function(app){
 		}else{}
 		var crypto = require('crypto');
 		var md5 = crypto.createHash('md5');
-		var password = md5.update(req.body.password.digest('base64'));
+		var password = md5.update(req.body.password).digest('base64');
 		
 		var newUser = new User({
 			name:req.body.username,
