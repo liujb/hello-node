@@ -1,10 +1,15 @@
-var mongodb = require('./db');
+/**
+ * [User]
+ * @param {[type]} user [description]
+ */
+
 function User(user) {
     this.name = user.name;
     this.password = user.password;
 };
 
-module.exports = User;
+
+var mongodb = require('./db');
 
 /**
  * 保存用户
@@ -16,21 +21,31 @@ User.prototype.save = function save(callback) {
         password: this.password
     };
 
-    console.log("fuck");
+    //建立数据库连接
+    mongodb.open(function(err, db) {
 
-    mongodb.open(function (err, db) {
         if (err) {
+            console.log(err);
+            mongodb.close();
             return callback(err);
-        } else {
-        }
-        db.collection('users', function (err, collection) {
+        } else {}
+
+        //读取users集合
+        db.collection('users', function(err, collection) {
             if (err) {
                 mongodb.close();
                 return callback(err);
-            } else {
-            }
-            collection.ensureIndex('name', {unique: true});
-            collection.insert(user, {safe: true}, function (err, user) {
+            } else {}
+            //为name属性添加索引
+            collection.ensureIndex('name', {
+                unique: true
+            });
+
+            //写入user文档
+            collection.insert(user, {
+                safe: true
+            }, function(err, user) {
+                //关闭数据库并执行回调函数
                 mongodb.close();
                 callback(err, user);
             });
@@ -44,18 +59,27 @@ User.prototype.save = function save(callback) {
  * @param callback
  */
 User.get = function get(username, callback) {
-    mongodb.open(function (err, db) {
+
+    //建立数据库连接
+    mongodb.open(function(err, db) {
         if (err) {
+            //如果数据库连接有误，则返回
             return callback(err);
-        } else {
-        }
-        db.collection('users', function (err, collection) {
+        } else {}
+
+        //读取users集合
+        db.collection('users', function(err, collection) {
             if (err) {
-                callback(err);
-            } else {
-            }
-            collection.findOne({name: username}, function (err, doc) {
+                //读取users集合有误，关闭数据库连接并返回
                 mongodb.close();
+                return callback(err);
+            } else {}
+
+            //查找name属性为username的文档
+            collection.findOne({
+                name: username
+            }, function(err, doc) {
+                mongodb.close();//关闭数据库
                 if (doc) {
                     var user = new User(doc);
                     callback(err, user);
@@ -66,3 +90,5 @@ User.get = function get(username, callback) {
         });
     });
 };
+
+module.exports = User;
