@@ -9,7 +9,9 @@ var setting = require("./setting.js");
 
 //require mongodb
 var Mongo = require('mongodb'),
-	Db = Mongo.Db;, Connection = Mongo.Connection, Server = Mongo.Server;
+	Db = Mongo.Db,
+	Connection = Mongo.Connection,
+	Server = Mongo.Server;
 //Connection.DEFAULT_PORT
 
 //new a Db instance
