@@ -15,7 +15,9 @@ var Mongo = require('mongodb'),
 //Connection.DEFAULT_PORT
 
 //new a Db instance
-var db = new Db(setting.db, new Server(setting.localhost, setting.port, {}));
+var db = new Db(setting.db, new Server(setting.localhost, setting.port, {
+	safe: true
+}));
 
 //interface
 module.exports = db;
