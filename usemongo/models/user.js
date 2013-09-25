@@ -23,14 +23,14 @@ User.fn = User.prototype;
 var db = require("../db.js");
 
 /**
- * insert an user to mongodb
+ * [insert an user to mongodb]
  * @param  {[type]}   user     [description]
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
 User.fn.insert = function(callback) {
 
-	//
+	//create the object
 	var obj = {
 		name: this.name,
 		password: this.password,
@@ -38,21 +38,67 @@ User.fn.insert = function(callback) {
 		sex: this.sex,
 		note: this.note
 	};
+
+	//open the database
 	db.open(function(err, db) {
-		if (err) {
-			console.log('Open database occur a err: ' + err);
-		} else {}
+
+		//call the users collection
 		db.collection("users", function(err, coll) {
+			//insert action
 			coll.insert(obj, function(err, result) {
+				//close the database
+				db.close(function(err, result) {});
 				if (err) {
-					console.log("Insert an object to db occur a err: " + err);
-					db.close(function(err, result) {});
+					callback(err, null);
 				} else {
-					console.log("Insert successed!");
-					console.log(result);
+					callback(null, result);
 				}
 			});
 		});
 	});
-
 };
+
+/**
+ * [delete an user]
+ * @param  {[type]}   user     [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+User.remove = function(user, callback) {
+	db.open(function(err, db) {
+		db.collection("users", function(err, coll) {
+			coll.remove(user, function(err, result) {
+				db.close(function(err, result) {});
+				if (!err) {
+					callback(null, result);
+				} else {
+					callback(err, null);
+				}
+				
+			});
+		});
+	});
+};
+
+/**
+ * [get list by conditions]
+ * @param  {[type]}   condition [description]
+ * @param  {Function} callback  [description]
+ * @return {[type]}             [description]
+ */
+User.list = function(condition, callback) {
+	db.open(function(err, db) {
+		db.collection("users", function(err, coll) {
+			coll.find(condition).toArray(function(err, list) {
+				if (err) {
+					callback(err, null);
+				} else {
+					callback(null, list);
+				}
+			});
+			db.close(function(err, result) {});
+		});
+	});
+};
+
+module.exports = User;

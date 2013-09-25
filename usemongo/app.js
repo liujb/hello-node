@@ -1,14 +1,36 @@
 /**
- * app.js
+ *
  * @authors Your Name (you@example.org)
  * @date    2013-09-23 18:12:20
  * @version $Id$
  */
-
-var api = require("./insert.js");
-api.add(function(err, model) {
-		if (err) {
-			console.log(err)
-		} else {}
+var runMsg = function(err, obj) {
+	if (err) {
+		console.log("Occurd an error: " + err);
+	} else {
+		console.log('Run successed! Return an object is :\n' + obj);
 	}
-})
+};
+
+var User = require("./models/user.js");
+if (User) {
+	var user = new User({
+		name: "allen_2",
+		age: 18
+	});
+
+	//insert
+	user.insert(function(err, obj) {
+		runMsg(err, obj);
+	});
+
+	//remove
+	// User.remove(user, function(err, obj) {
+	// 	runMsg(err, obj);
+	// });
+
+	User.list({}, function(err, obj) {
+		runMsg(err, obj);
+	});
+
+} else {}
