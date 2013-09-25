@@ -1,5 +1,5 @@
 /**
- * connect to mongodb
+ * test connect to mongodb
  * @authors Your Name (you@example.org)
  * @date    2013-09-23 22:35:41
  * @version $Id$

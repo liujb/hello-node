@@ -1,8 +1,8 @@
 /**
- *
- * @authors Your Name (you@example.org)
+ * Config for database
+ * @authors liujiangbei (liujiangbei@126.com)
  * @date    2013-09-23 17:11:02
- * @version $Id$
+ * @version $1.0$
  */
 module.exports = {
 	db: "test",

@@ -8,8 +8,7 @@
 var api = require("./insert.js");
 api.add(function(err, model) {
 		if (err) {
-			console.log(err);
-			return;
+			console.log(err)
 		} else {}
 	}
-});
+})
