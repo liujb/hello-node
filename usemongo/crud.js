@@ -17,19 +17,19 @@ db.open(function(err, db) {
 	db.collection("users", function(err, collection) {
 
 		//insert a object to mongodb
-		// collection.insert({
-		// 	username: "liujb",
-		// 	age: 23,
-		// 	sex: 'man'
-		// }, function(err, result) {
-		// 	if (err) {
-		// 		console.log(err);
-		// 	} else {
-		// 		console.log('Insert successed!');
-		// 		console.log(result);
-		// 	}
-		// });
-		
+		collection.insert({
+			username: "liujb",
+			age: 23,
+			sex: 'man'
+		}, function(err, result) {
+			if (err) {
+				console.log(err);
+			} else {
+				console.log('Insert successed!');
+				console.log(result);
+			}
+		});
+
 
 		// collection.update({
 		// 	username: "liujb"

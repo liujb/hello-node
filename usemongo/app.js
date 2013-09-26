@@ -7,8 +7,10 @@
 var runMsg = function(err, obj) {
 	if (err) {
 		console.log("Occurd an error: " + err);
+	} else if (obj) {
+		console.log('Run successed! Return an object is :\n' + obj.toString());
 	} else {
-		console.log('Run successed! Return an object is :\n' + obj);
+		console.log("successed.");
 	}
 };
 
@@ -20,17 +22,19 @@ if (User) {
 	});
 
 	//insert
-	user.insert(function(err, obj) {
-		runMsg(err, obj);
-	});
-
-	//remove
-	// User.remove(user, function(err, obj) {
+	// user.insert(function(err, obj) {
 	// 	runMsg(err, obj);
 	// });
 
-	User.list({}, function(err, obj) {
+	//remove
+	User.remove(user, function(err, obj) {
 		runMsg(err, obj);
 	});
+
+	// User.list({
+	// 	name: "allen_2"
+	// }, function(err, obj) {
+	// 	runMsg(err, obj);
+	// });
 
 } else {}
