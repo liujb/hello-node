@@ -9,7 +9,7 @@ var path = require('path');
 var app = express();
 
 var MongoStore = require('connect-mongo')(express);
-var settings = require('./settings');
+var setting = require('./setting.js');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -23,6 +23,21 @@ app.use(express.logger('dev'));
 //去掉之后命令行不会输出请求的信息
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+
+//管理会话
+//解析cookie的中间件
+app.use(express.cookieParser());
+app.use(express.session({
+	secret: setting.cookieSecret, //防止篡改cookie
+	key: setting.db, //cookie的名称
+	cookie: {
+		maxAge: 1000 * 60 * 60 * 24 * 30
+	}, //30 days
+	store: new MongoStore({
+		db: setting.db
+	})
+}));
+
 //应用路由解析规则
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
