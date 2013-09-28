@@ -10,12 +10,15 @@ var app = express();
 
 var MongoStore = require('connect-mongo')(express);
 var setting = require('./setting.js');
+var flash = require('connect-flash');
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 //调用 ejs 模板引擎解析 views/index.ejs
 app.set('view engine', 'ejs');
+
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -37,6 +40,9 @@ app.use(express.session({
 		db: setting.db
 	})
 }));
+
+//使用flash消息提示
+app.use(flash());
 
 //应用路由解析规则
 app.use(app.router);
