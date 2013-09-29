@@ -26,10 +26,13 @@ module.exports = function(app) {
 	/**
 	 * 注册页面
 	 */
-	app.get('/reg', checkLogin);
+	app.get('/reg', notLogin_next);
 
 	/**
 	 * 注册页面
+	 * @param  {[type]} req [description]
+	 * @param  {[type]} res [description]
+	 * @return {[type]}     [description]
 	 */
 	app.get('/reg', function(req, res) {
 		res.render('reg', {
@@ -40,7 +43,10 @@ module.exports = function(app) {
 		});
 	});
 
-	app.post('/reg', checkLogin);
+	/**
+	 * 
+	 */
+	app.post('/reg', notLogin_next);
 
 	/**
 	 * 注册
@@ -80,7 +86,17 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/login', checkLogin);
+	/**
+	 * 
+	 */
+	app.get('/login', notLogin_next);
+
+	/**
+	 * [description]
+	 * @param  {[type]} req [description]
+	 * @param  {[type]} res [description]
+	 * @return {[type]}     [description]
+	 */
 	app.get('/login', function(req, res) {
 		res.render('login', {
 			title: '登录',
@@ -90,7 +106,11 @@ module.exports = function(app) {
 		});
 	});
 
-	app.post('/reg', checkLogin);
+	/**
+	 * 
+	 */
+	app.post('/login', notLogin_next);
+
 	/**
 	 * 登录
 	 */
@@ -113,16 +133,44 @@ module.exports = function(app) {
 			}
 		});
 	});
-	app.get('/reg', checkLogin);
+
+	/**
+	 * 
+	 */
+	app.get('/post', login_next);
+
+	/**
+	 * [description]
+	 * @param  {[type]} req [description]
+	 * @param  {[type]} res [description]
+	 * @return {[type]}     [description]
+	 */
 	app.get('/post', function(req, res) {
 		res.render('post', {
 			title: '发表'
 		});
 	});
-	app.get('/reg', checkLogin);
-	app.post('/post', function(req, res) {});
 
-	app.get('/reg', checkLogin);
+	/**
+	 * 
+	 */
+	app.get('/post', login_next);
+
+	/**
+	 * [description]
+	 * @param  {[type]} req [description]
+	 * @param  {[type]} res [description]
+	 * @return {[type]}     [description]
+	 */
+	app.post('/post', function(req, res) {
+
+	});
+
+	/**
+	 * 
+	 */
+	app.get('/logout', login_next);
+
 	/**
 	 * 注销
 	 */
@@ -133,23 +181,35 @@ module.exports = function(app) {
 	});
 
 
-	function checkNotLogin(req, res, next) {
+	/**
+	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
+	 * checkLogin
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
+	function login_next(req, res, next) {
 		if (!req.session.user) {
 			req.flash('error', '未登录！');
 			res.redirect('/login');
-		} else {
-			next();
-		}
-
+		} else {}
+		next();
 	}
 
-	function checkLogin(req, res, next) {
+	/**
+	 * 如果登录了则返回上一个页面，否则匹配下一个路由
+	 * checkNotLogin
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
+	function notLogin_next(req, res, next) {
 		if (req.session.user) {
 			req.flash('error', '已登录.');
 			res.redirect('back');
-		} else {
-			next();
-		}
-
+		} else {}
+		next();
 	}
 };
