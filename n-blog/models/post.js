@@ -40,6 +40,7 @@ Post.fn.save = function(callback) {
 
 	mongodb.open(function(err, db) {
 		if (err) {
+			mongodb.close();
 			return callback(err);
 		} else {}
 
@@ -78,6 +79,7 @@ Post.list = function(name, callback) {
 			coll.find(query).sort({
 				time: -1
 			}).toArray(function(err, docs) {
+				mongodb.close();
 				if (err) {
 					return callback(err);
 				} else {}

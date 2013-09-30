@@ -27,6 +27,7 @@ User.fn.save = function(callback) {
 	//打开数据库
 	mongodb.open(function(err, db) {
 		if (err) {
+			mongodb.close();
 			// 如果出现错误则返回
 			return callback(err);
 		} else {}
@@ -55,6 +56,7 @@ User.fn.save = function(callback) {
 User.get = function(name, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
+			mongodb.close();
 			return callback(err);
 		} else {}
 
