@@ -3,6 +3,7 @@
  */
 
 var crypto = require('crypto'),
+	fs = require('fs'),	
 	User = require('../models/user.js'),
 	Post = require('../models/post.js');
 
@@ -220,7 +221,34 @@ module.exports = function(app) {
 		res.redirect('/');
 	});
 
+	/**
+	 * 上传文件
+	 */
+	app.get('/upload', login_next);
+	app.get('/upload', function(req, res) {
+		res.render('upload', {
+			title: '文件上传',
+			user: req.session.user,
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString()
+		});
+	});
 
+	app.post('/upload',login_next);
+	app.post('/upload',function(req,res){
+		for(var f in req.files){
+			if(req.files[i].size===0){
+				fs.unlinkSync(req.files[i].path);
+				console.log('Successfully removed an empty folder.');
+			}else{
+				var target_path = './public/upload/images/'+req.files[i].name;
+				fs.renameSync(req.files[i].path,target_path);
+				console.log('Successfully renamed a file.');
+			}
+		}
+		req.flash('success','文件上传成功.');
+		res.redirect('/upload');
+	});
 	/**
 	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
 	 * checkLogin

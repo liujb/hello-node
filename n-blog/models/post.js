@@ -5,6 +5,7 @@
  * @version $Id$
  */
 var mongodb = require('./db.js');
+var markdown = require('markdown').markdown;
 
 var Post = function(obj) {
 	this.title = obj.title;
@@ -63,6 +64,12 @@ Post.fn.save = function(callback) {
 	});
 };
 
+/**
+ * [获取帖子列表]
+ * @param  {[type]}   name     [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
 Post.list = function(name, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -83,6 +90,11 @@ Post.list = function(name, callback) {
 				if (err) {
 					return callback(err);
 				} else {}
+				//循环docs
+				//将内容输出为html
+				docs.forEach(function(doc){
+					doc.content = markdown.toHTML(doc.content);
+				});
 				callback(null, docs); //成功！以数组形式返回查询的结果
 			});
 		});

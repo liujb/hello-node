@@ -24,7 +24,10 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 //connect中间件提供的，用来解析请求体
 //去掉之后命令行不会输出请求的信息
-app.use(express.bodyParser());
+app.use(express.bodyParser({
+	keepExtensions: true,
+	uploadDir: './public/upload/images'
+}));
 app.use(express.methodOverride());
 
 //管理会话
