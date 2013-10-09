@@ -3,7 +3,7 @@
  */
 
 var crypto = require('crypto'),
-	fs = require('fs'),	
+	fs = require('fs'),
 	User = require('../models/user.js'),
 	Post = require('../models/post.js');
 
@@ -203,8 +203,6 @@ module.exports = function(app) {
 				res.redirect('/');
 			}
 		});
-
-
 	});
 
 	/**
@@ -234,21 +232,66 @@ module.exports = function(app) {
 		});
 	});
 
-	app.post('/upload',login_next);
-	app.post('/upload',function(req,res){
-		for(var f in req.files){
-			if(req.files[i].size===0){
-				fs.unlinkSync(req.files[i].path);
+	app.post('/upload', login_next);
+	app.post('/upload', function(req, res) {
+		for (var f in req.files) {
+			if (req.files[f].size === 0) {
+				fs.unlinkSync(req.files[f].path);
 				console.log('Successfully removed an empty folder.');
-			}else{
-				var target_path = './public/upload/images/'+req.files[i].name;
-				fs.renameSync(req.files[i].path,target_path);
+			} else {
+				var target_path = './public/upload/images/' + req.files[f].name;
+				fs.renameSync(req.files[f].path, target_path);
 				console.log('Successfully renamed a file.');
 			}
 		}
-		req.flash('success','文件上传成功.');
+		req.flash('success', '文件上传成功.');
 		res.redirect('/upload');
 	});
+
+	/**
+	 * 获取帖子列表
+	 * @param  {[type]} req [description]
+	 * @param  {[type]} res [description]
+	 * @return {[type]}     [description]
+	 */
+	app.get('/u/:name', function(req, res) {
+		User.get(req.params.name, function(err, user) {
+			if (!user) {
+				req.flash('error', '用户不存在.');
+				return res.redirect('/');
+			} else {}
+			Post.list(user.name, function(err, docs) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				} else {}
+				res.render('user', {
+					title: user.name,
+					posts: docs,
+					user: req.session.user,
+					success: req.flash('success').toString(),
+					error: req.flash('error').toString()
+				});
+			});
+		});
+	});
+
+	app.get('/u/:name/:day/:title', function(req, res) {
+		Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			} else {}
+			res.render('article', {
+				title: req.params.title,
+				post: post,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+
 	/**
 	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
 	 * checkLogin

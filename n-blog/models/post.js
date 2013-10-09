@@ -81,8 +81,11 @@ Post.list = function(name, callback) {
 				mongodb.close();
 				return callback(err);
 			} else {}
+			//查询条件
 			var query = {};
-			query.name = name ? name : null;
+			if (name) {
+				query.author = name;
+			} else {}
 			coll.find(query).sort({
 				time: -1
 			}).toArray(function(err, docs) {
@@ -92,10 +95,47 @@ Post.list = function(name, callback) {
 				} else {}
 				//循环docs
 				//将内容输出为html
-				docs.forEach(function(doc){
+				docs.forEach(function(doc) {
 					doc.content = markdown.toHTML(doc.content);
 				});
 				callback(null, docs); //成功！以数组形式返回查询的结果
+			});
+		});
+	});
+};
+
+
+/**
+ * 根据姓名，日期，标题获取具体的一篇帖子
+ * @param  {[type]}   name     [description]
+ * @param  {[type]}   day      [description]
+ * @param  {[type]}   title    [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+Post.getOne = function(name, day, title, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			mongodb.close();
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			coll.findOne({
+				"author": name,
+				"time.day": day,
+				"title": title
+			}, function(err, doc) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {}
+				//解析为markdown
+				doc.content = markdown.toHTML(doc.content);
+				callback(null, doc);
 			});
 		});
 	});
