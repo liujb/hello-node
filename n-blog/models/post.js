@@ -140,3 +140,84 @@ Post.getOne = function(name, day, title, callback) {
 		});
 	});
 };
+
+Post.edit = function(name, day, title, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			coll.findOne({
+				"author": name,
+				"time.day": day,
+				"title": title
+			}, function(err, doc) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {}
+				callback(null, doc);
+			});
+		});
+	});
+};
+
+Post.update = function(name, day, title, content, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			coll.update({
+				"author": name,
+				"time.day": day,
+				"title": title
+			}, {
+				$set: {
+					"content": content
+				}
+			}, function(err, result) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {
+					callback(null);
+				}
+			});
+		});
+	});
+};
+
+Post.remove = function(name, day, title, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			coll.remove({
+				"author": name,
+				"time.day": day,
+				"title": title
+			}, function(err, result) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {
+					callback(null);
+				}
+			});
+		});
+	});
+};

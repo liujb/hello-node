@@ -292,6 +292,51 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/edit/:name/:day/:title', login_next);
+	app.get('/edit/:name/:day/:title', function(req, res) {
+		var currUser = req.session.user;
+		Post.edit(currUser.name, req.params.day, req.params.title, function(err, doc) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			} else {}
+			res.render('edit', {
+				title: '编辑',
+				post: doc,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+
+	app.post('/edit/:name/:day/:title', login_next);
+	app.post('/edit/:name/:day/:title', function(req, res) {
+		var currentUser = req.session.user;
+		Post.update(currentUser.name, req.params.day, req.params.title, req.body.content, function(err) {
+			var url = '/u/' + currentUser.name + '/' + req.params.day + '/' + req.params.title;
+			if (err) {
+				req.flash('error', err);
+				return res.redirect(url); //出错！返回文章页
+			} else {}
+			req.flash('success', '修改成功!');
+			res.redirect(url); //成功！返回文章页
+		});
+	});
+
+	app.get('/remove/:name/:day/:title', login_next);
+	app.get('/remove/:name/:day/:title', function(req, res) {
+		console.log('fuck');
+		var currentUser = req.session.user;
+		Post.remove(currentUser.name, req.params.day, req.params.title, function(err) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('back'); //出错！返回文章页
+			} else {}
+			req.flash('success', '删除成功!');
+			res.redirect('/'); //成功！返回文章页
+		});
+	});
 	/**
 	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
 	 * checkLogin
@@ -325,4 +370,4 @@ module.exports = function(app) {
 		} else {}
 		next();
 	}
-};
+}
