@@ -150,3 +150,30 @@ Post.getOne = function(name, day, title, callback) {
 		});
 	});
 };
+
+Post.getArchive = function(callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			coll.find({}, {
+				'author': 1,
+				'time': 1,
+				"title": 1
+			}).sort({
+				time: -1
+			}).toArray(function(err, docs) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {}
+				callback(null, docs);
+			});
+		});
+	});
+};

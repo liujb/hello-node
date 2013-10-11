@@ -253,6 +253,22 @@ module.exports = function(app) {
 		res.redirect('/upload');
 	});
 
+	app.get('/archive', function(req, res) {
+		Post.getArchive(function(err, docs) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			} else {}
+			res.render('archive', {
+				title: 'Archive',
+				posts: docs,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+
 	/**
 	 * 获取帖子列表
 	 * @param  {[type]} req [description]
@@ -266,7 +282,7 @@ module.exports = function(app) {
 				req.flash('error', '用户不存在.');
 				return res.redirect('/');
 			} else {}
-			var pageIndex = req.query.p ? parseInt(req.query.p) : 0;
+			var pageIndex = req.query.p ? parseInt(req.query.p) : 1;
 			Post.list(user.name, pageIndex, function(err, docs, total) {
 				if (err) {
 					req.flash('error', err);
