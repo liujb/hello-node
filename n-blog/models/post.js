@@ -36,7 +36,8 @@ Post.fn.save = function(callback) {
 		title: this.title,
 		content: this.content,
 		author: this.author,
-		time: time
+		time: time,
+		comments: []
 	};
 
 	mongodb.open(function(err, db) {
@@ -70,7 +71,7 @@ Post.fn.save = function(callback) {
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-Post.list = function(name, callback) {
+Post.list = function(name, pageIndex, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			mongodb.close();
@@ -86,19 +87,25 @@ Post.list = function(name, callback) {
 			if (name) {
 				query.author = name;
 			} else {}
-			coll.find(query).sort({
-				time: -1
-			}).toArray(function(err, docs) {
-				mongodb.close();
-				if (err) {
-					return callback(err);
-				} else {}
-				//循环docs
-				//将内容输出为html
-				docs.forEach(function(doc) {
-					doc.content = markdown.toHTML(doc.content);
+
+			coll.count(query, function(err, total) {
+				coll.find(query, {
+					skip: (pageIndex - 1) * 10,
+					limit: 10
+				}).sort({
+					time: -1
+				}).toArray(function(err, docs) {
+					mongodb.close();
+					if (err) {
+						return callback(err);
+					} else {}
+					//循环docs
+					//将内容输出为html
+					docs.forEach(function(doc) {
+						doc.content = markdown.toHTML(doc.content);
+					});
+					callback(null, docs, total); //成功！以数组形式返回查询的结果
 				});
-				callback(null, docs); //成功！以数组形式返回查询的结果
 			});
 		});
 	});
@@ -135,6 +142,9 @@ Post.getOne = function(name, day, title, callback) {
 				} else {}
 				//解析为markdown
 				doc.content = markdown.toHTML(doc.content);
+				doc.comments.forEach(function(comment) {
+					comment.content = markdown.toHTML(comment.content);
+				});
 				callback(null, doc);
 			});
 		});

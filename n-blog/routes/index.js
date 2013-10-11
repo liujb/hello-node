@@ -5,7 +5,8 @@
 var crypto = require('crypto'),
 	fs = require('fs'),
 	User = require('../models/user.js'),
-	Post = require('../models/post.js');
+	Post = require('../models/post.js'),
+	Comment = require('../models/comment.js');
 
 module.exports = function(app) {
 
@@ -16,7 +17,8 @@ module.exports = function(app) {
 	 * @return {[type]}     [description]
 	 */
 	app.get('/', function(req, res) {
-		Post.list(null, function(err, posts) {
+		var pageIndex = req.query.p ? parseInt(req.query.p) : 1;
+		Post.list(null, pageIndex, function(err, posts, total) {
 			if (err) {
 				posts = [];
 			} else {}
@@ -24,6 +26,9 @@ module.exports = function(app) {
 				title: '主页',
 				user: req.session.user,
 				posts: posts,
+				pageIndex: pageIndex,
+				isFirstPage: (pageIndex - 1) === 0,
+				isLastPage: ((pageIndex - 1) * 10 + posts.length) === total,
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString()
 			});
@@ -255,12 +260,14 @@ module.exports = function(app) {
 	 * @return {[type]}     [description]
 	 */
 	app.get('/u/:name', function(req, res) {
+
 		User.get(req.params.name, function(err, user) {
 			if (!user) {
 				req.flash('error', '用户不存在.');
 				return res.redirect('/');
 			} else {}
-			Post.list(user.name, function(err, docs) {
+			var pageIndex = req.query.p ? parseInt(req.query.p) : 0;
+			Post.list(user.name, pageIndex, function(err, docs, total) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -269,6 +276,9 @@ module.exports = function(app) {
 					title: user.name,
 					posts: docs,
 					user: req.session.user,
+					pageIndex: pageIndex,
+					isFirstPage: pageIndex === 0,
+					isLastPage: ((pageIndex - 1) * 10 + docs.length) === total,
 					success: req.flash('success').toString(),
 					error: req.flash('error').toString()
 				});
@@ -289,6 +299,30 @@ module.exports = function(app) {
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString()
 			});
+		});
+	});
+
+	app.post('/u/:name/:day/:title', function(req, res) {
+
+		var date = new Date(),
+			time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+
+		var comment = {
+			name: req.body.name,
+			email: req.body.email,
+			website: req.body.website,
+			time: time,
+			content: req.body.content
+		};
+		var newComment = new Comment(req.params.name, req.params.day, req.params.title, comment);
+		console.log('进入了action');
+		newComment.save(function(err) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			} else {}
+			req.flash('success', '留言成功.');
+			res.redirect('back');
 		});
 	});
 
