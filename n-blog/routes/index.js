@@ -318,7 +318,6 @@ module.exports = function(app) {
 		});
 	});
 
-<<<<<<< HEAD
 	app.get('/edit/:name/:day/:title', login_next);
 	app.get('/edit/:name/:day/:title', function(req, res) {
 		var currUser = req.session.user;
@@ -364,7 +363,8 @@ module.exports = function(app) {
 			res.redirect('/'); //成功！返回文章页
 		});
 	});
-=======
+
+	
 	app.post('/u/:name/:day/:title', function(req, res) {
 
 		var date = new Date(),
@@ -389,7 +389,6 @@ module.exports = function(app) {
 		});
 	});
 
->>>>>>> 22bc50e6afc2ebcf2d73047911ea1e3903594e4c
 	/**
 	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
 	 * checkLogin

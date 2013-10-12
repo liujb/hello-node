@@ -7,6 +7,10 @@
 var mongodb = require('./db.js');
 var markdown = require('markdown').markdown;
 
+/**
+ * Post类
+ * @param {[type]} obj [description]
+ */
 var Post = function(obj) {
 	this.title = obj.title;
 	this.content = obj.content;
@@ -111,7 +115,6 @@ Post.list = function(name, pageIndex, callback) {
 	});
 };
 
-
 /**
  * 根据姓名，日期，标题获取具体的一篇帖子
  * @param  {[type]}   name     [description]
@@ -151,11 +154,7 @@ Post.getOne = function(name, day, title, callback) {
 	});
 };
 
-<<<<<<< HEAD
 Post.edit = function(name, day, title, callback) {
-=======
-Post.getArchive = function(callback) {
->>>>>>> 22bc50e6afc2ebcf2d73047911ea1e3903594e4c
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -165,13 +164,31 @@ Post.getArchive = function(callback) {
 				mongodb.close();
 				return callback(err);
 			} else {}
-<<<<<<< HEAD
 			coll.findOne({
 				"author": name,
 				"time.day": day,
 				"title": title
 			}, function(err, doc) {
-=======
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {}
+				callback(null, doc);
+			});
+		});
+	});
+};
+
+Post.getArchive = function(callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
 			coll.find({}, {
 				'author': 1,
 				'time': 1,
@@ -179,13 +196,11 @@ Post.getArchive = function(callback) {
 			}).sort({
 				time: -1
 			}).toArray(function(err, docs) {
->>>>>>> 22bc50e6afc2ebcf2d73047911ea1e3903594e4c
 				mongodb.close();
 				if (err) {
 					return callback(err);
 				} else {}
-<<<<<<< HEAD
-				callback(null, doc);
+				callback(null, docs);
 			});
 		});
 	});
@@ -194,13 +209,16 @@ Post.getArchive = function(callback) {
 Post.update = function(name, day, title, content, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
+			console.log(err);
 			return callback(err);
 		} else {}
+		console.log("xxx");
 		db.collection('post', function(err, coll) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			} else {}
+			console.log("xxx2");
 			coll.update({
 				"author": name,
 				"time.day": day,
@@ -212,10 +230,11 @@ Post.update = function(name, day, title, content, callback) {
 			}, function(err, result) {
 				mongodb.close();
 				if (err) {
+					console.log(err);
 					return callback(err);
-				} else {
-					callback(null);
-				}
+				} else {}
+
+				callback(null);
 			});
 		});
 	});
@@ -242,9 +261,7 @@ Post.remove = function(name, day, title, callback) {
 				} else {
 					callback(null);
 				}
-=======
 				callback(null, docs);
->>>>>>> 22bc50e6afc2ebcf2d73047911ea1e3903594e4c
 			});
 		});
 	});
