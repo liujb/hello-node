@@ -181,6 +181,13 @@ module.exports = function(app) {
 	app.post('/post', function(req, res) {
 		var post = new Post({
 			title: req.body.title,
+			tags: [{
+				"tag": req.body.tag1
+			}, {
+				"tag": req.body.tag2
+			}, {
+				"tag": req.body.tag3
+			}],
 			content: req.body.content,
 		});
 		if (!post.title) {
@@ -364,7 +371,7 @@ module.exports = function(app) {
 		});
 	});
 
-	
+
 	app.post('/u/:name/:day/:title', function(req, res) {
 
 		var date = new Date(),
@@ -386,6 +393,38 @@ module.exports = function(app) {
 			} else {}
 			req.flash('success', '留言成功.');
 			res.redirect('back');
+		});
+	});
+
+	app.get('/tags', function(req, res) {
+		Post.getTags(function(err, docs) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			} else {}
+			res.render('tags', {
+				title: '标签',
+				posts: docs,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+
+	app.get('/tags/:tag', function(req, res) {
+		Post.getTag(req.params.tag, function(err, docs) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('tag', {
+				title: 'TAG:' + req.params.tag,
+				posts: docs,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
 		});
 	});
 
@@ -422,4 +461,4 @@ module.exports = function(app) {
 		} else {}
 		next();
 	}
-}
+};

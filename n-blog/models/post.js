@@ -15,6 +15,7 @@ var Post = function(obj) {
 	this.title = obj.title;
 	this.content = obj.content;
 	this.author = obj.author;
+	this.tags = obj.tags;
 };
 
 module.exports = Post;
@@ -41,6 +42,7 @@ Post.fn.save = function(callback) {
 		content: this.content,
 		author: this.author,
 		time: time,
+		tags: this.tags,
 		comments: []
 	};
 
@@ -260,6 +262,60 @@ Post.remove = function(name, day, title, callback) {
 					return callback(err);
 				} else {}
 				callback(null);
+			});
+		});
+	});
+};
+
+Post.getTags = function(callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		} else {}
+		db.collection('post', function(err, coll) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			} else {}
+			//distinct 用来找出给定键的所有不同值
+			coll.distinct("tags.tag", function(err, docs) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				} else {}
+				callback(null, docs);
+			});
+		});
+	});
+};
+
+//返回含有特定标签的所有文章
+Post.getTag = function(tag, callback) {
+	console.log(tag);
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('post', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			//通过 tags.tag 查询并返回只含有 name、time、title 键的文档组成的数组
+			collection.find({
+				"tags.tag": tag
+			}, {
+				"author": 1,
+				"time": 1,
+				"title": 1
+			}).sort({
+				time: -1
+			}).toArray(function(err, docs) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
+				}
+				callback(null, docs);
 			});
 		});
 	});
