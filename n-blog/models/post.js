@@ -258,10 +258,8 @@ Post.remove = function(name, day, title, callback) {
 				mongodb.close();
 				if (err) {
 					return callback(err);
-				} else {
-					callback(null);
-				}
-				callback(null, docs);
+				} else {}
+				callback(null);
 			});
 		});
 	});
