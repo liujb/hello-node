@@ -43,7 +43,8 @@ Post.fn.save = function(callback) {
 		author: this.author,
 		time: time,
 		tags: this.tags,
-		comments: []
+		comments: [],
+		"pv": 0
 	};
 
 	mongodb.open(function(err, db) {
@@ -151,6 +152,19 @@ Post.getOne = function(name, day, title, callback) {
 					comment.content = markdown.toHTML(comment.content);
 				});
 				callback(null, doc);
+			});
+			coll.update({
+				"author": name,
+				"time.day": day,
+				"title": title
+			}, {
+				$inc: {
+					'pv': 1
+				}
+			}, function(err, result) {
+				if (err) {
+					callback(err);
+				}
 			});
 		});
 	});
