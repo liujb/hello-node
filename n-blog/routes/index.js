@@ -276,6 +276,30 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/search', function(req, res) {
+		Post.search(req.query.keyword, function(err, posts) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('search', {
+				title: "SEARCH:" + req.query.keyword,
+				posts: posts,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+	app.get('/links', function(req, res) {
+		res.render('links', {
+			title: '友情链接',
+			user: req.session.user,
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString()
+		});
+	});
+
 	/**
 	 * 获取帖子列表
 	 * @param  {[type]} req [description]
@@ -428,6 +452,10 @@ module.exports = function(app) {
 		});
 	});
 
+	app.use(function(req, res) {
+		res.render("404");
+	});
+	
 	/**
 	 * 如果未登录则跳转到登录页，登录成功则匹配下一个路由
 	 * checkLogin
