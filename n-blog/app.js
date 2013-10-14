@@ -2,6 +2,13 @@
  * Module dependencies.
  */
 
+var fs = require('fs');
+var accessLog = fs.createWriteStream('access.log', {
+	falgs: 'a'
+});
+var errorLog = fs.createWriteStream('error.log', {
+	flags: 'a'
+});
 var express = require('express');
 var routes = require('./routes');
 var http = require('http');
@@ -21,7 +28,11 @@ app.set('view engine', 'ejs');
 
 
 app.use(express.favicon());
+//使用Express自带的logger中间件实现了终端日志的输出
 app.use(express.logger('dev'));
+app.use(express.logger({
+	stream: accessLog
+}));
 //connect中间件提供的，用来解析请求体
 //去掉之后命令行不会输出请求的信息
 app.use(express.bodyParser({
@@ -50,6 +61,12 @@ app.use(flash());
 //应用路由解析规则
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(err, req, res, next) {
+	var meta = '[' + new Date() + ']' + req.url + '\n';
+	errorLog.write(meta + err.stack + '\n');
+	next();
+});
 
 // development only
 if ('development' == app.get('env')) {
