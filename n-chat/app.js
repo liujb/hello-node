@@ -42,23 +42,68 @@ app.get('/', function(req, res) {
 });
 
 app.get('/signin', function(req, res) {
-	res.sendfile('/views/signin.html');
+	res.sendfile('views/signin.html');
 });
 
 app.post('/signin', function(req, res) {
 	if (users[req.body.name]) {
+		console.log(req.body.name);
 		res.redirect('/signin'); //表示存在此用户不能登录
 	} else {
-		res.cookie('users', req.body.name, {
+		console.log('fuck');
+		res.cookie('user', req.body.name, {
 			maxAge: 1000 * 60 * 60 * 24 * 30
 		}); //将那么存储到cookies中并设置有效期为30天
+		res.redirect('/');
 	}
 });
 
 
-var server = http.createSerer(app);
-var io = require('socket.io').listen(server);
-io.sockets.on('connection', function(socket) {});
+var server = http.createServer(app); //创建服务
+var io = require('socket.io').listen(server); //监听服务
+
+//socket连接事件
+io.sockets.on('connection', function(socket) {
+	//服务端监听客户端emit的“上线”信号
+	socket.on('online', function(data) { //用户上线
+		socket.name = data.user; //将上线的用户名存储为 socket 对象的属性，以区分每个socket对象，方便后面使用
+		console.log("data.user：" + data.user);
+		if (!users[data.user]) { //users 对象中不存在该用户名则插入该用户名
+			users[data.user] = data.user;
+		} else {}
+		//向所有用户广播该用户上线信息
+		io.sockets.emit('online', {
+			users: users,
+			user: data.user
+		});
+	});
+	//监听说话信号
+	socket.on('say', function(data) {
+		if (data.to === 'all') {
+			socket.broadcast.emit('say', data);
+		} else {
+			var clients = io.sockets.clients();
+			clients.forEach(function(client) {
+				if (client.name === data.to) {
+					client.emit('say', data);
+				} else {}
+			});
+		}
+	});
+
+	//当对方关闭连接后触发disconnect事件
+	socket.on('disconnect', function() {
+		if (users[socket.name]) {
+			delete users[socket.name];
+			//像除连接外的所有连接发送offline信号
+			socket.broadcast.emit('offline', {
+				users: users,
+				user: socket.name
+			});
+		} else {}
+	});
+});
+
 server.listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
 });
