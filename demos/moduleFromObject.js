@@ -1,13 +1,13 @@
-function Hello(){
-	var name;
-	this.setName=function(thyName){
-		name=thyName;
-	};
+function Hello() {
+    var name;
+    this.setName = function(thyName) {
+        name = thyName;
+    };
 
-	this.sayHello = function(){
-		console.log(' Hello ',name);
-	};
+    this.sayHello = function() {
+        console.log(' Hello ', name);
+    };
 };
 
-exports.Hello=Hello;
+exports.Hello = Hello;
 //module.exports=Hello;

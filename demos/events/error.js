@@ -6,10 +6,7 @@
 var events = require('events');
 
 var emitter = new events.EventEmitter();
-
-/*
-emitter.on('error',function(){
-	console.log('error messages');
+emitter.on('error', function() {
+    console.log('error messages');
 });
- */
 emitter.emit('error');

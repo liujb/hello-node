@@ -7,11 +7,11 @@
 var fireCount = 0;
 var start = new Date;
 //console.log(start.toString());
-var timer = setInterval(function(){
-	if(new Date - start > 1000){
-		clearInterval(timer);
-		console.log(fireCount);
-		return;
-	}else{}
-	fireCount++;
-},0)
+var timer = setInterval(function() {
+    if (new Date - start > 1000) {
+        clearInterval(timer);
+        console.log(fireCount);
+        return;
+    } else {}
+    fireCount++;
+}, 0)
