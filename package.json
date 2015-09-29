@@ -1,0 +1,19 @@
+{
+  "name": "hello-node",
+  "version": "1.0.0",
+  "description": "node学习之路愿结识小伙伴。 微信：JiangbeiLiu",
+  "main": "filter-phones.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liujb/hello-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liujb/hello-node/issues"
+  },
+  "homepage": "https://github.com/liujb/hello-node#readme"
+}

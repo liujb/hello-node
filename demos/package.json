@@ -1,0 +1,16 @@
+{
+  "name": "dems",
+  "version": "1.0.0",
+  "description": "",
+  "main": "console-log.js",
+  "dependencies": {
+    "express": "^3.0.0rc2",
+    "line-reader": "^0.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
