@@ -6,8 +6,9 @@
 //再执行setTimeout里面的函数
 //当i等于4的时候，不符合循环的条件了，之前定义的3个setTimeout(...)
 //就会执行
+
 for (var i = 1, len = 3; i <= len; i++) {
-    setTimeout(function() {
-        console.log(i);
-    }, 0);
-};
+  setTimeout(function () {
+    console.log(i);
+  }, 0);
+}

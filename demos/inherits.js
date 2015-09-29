@@ -2,25 +2,25 @@
  * author Allen
  * 实现对象间圆形继承的函数
  */
-var util=require('util');
+var util = require('util');
 
-function Base(){
-	this.name='base';
-	this.base=1991;
-	this.sayHello=function(){
-		console.log('Hello '+this.name);
-	};
+function Base() {
+  this.name = 'base';
+  this.base = 1991;
+  this.sayHello = function () {
+    console.log('Hello ' + this.name);
+  };
 };
 
-Base.prototype.showName=function(){
-	console.log(this.name);
+Base.prototype.showName = function () {
+  console.log(this.name);
 };
 
-function Sub(){
-	this.name='Sub';
+function Sub() {
+  this.name = 'Sub';
 };
 
-util.inherits(Sub,Base);
+util.inherits(Sub, Base);
 
 var objBase = new Base();
 objBase.showName();
