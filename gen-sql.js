@@ -6,7 +6,7 @@ var srcFile2 = "/Users/liujb/Desktop/09-23-batch-update/yuyang_update_origin_dat
 var destFile = "/Users/liujb/Desktop/09-23-batch-update/yuyang_update_data.csv";
 
 var result = [];
-var reset2 = [];
+var reset2 = []
 
 lineReader.eachLine(srcFile, function (line, last) {
 
@@ -19,7 +19,7 @@ lineReader.eachLine(srcFile, function (line, last) {
       driverSerial: tmpArr[1]
     });
   }
-  
+
   if (last) {
 
     console.log(result.length);

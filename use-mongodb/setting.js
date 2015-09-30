@@ -5,7 +5,7 @@
  * @version $1.0$
  */
 module.exports = {
-	db: "test",
-	localhost: "127.0.0.1",
-	port: "27017"
+  db: "test",
+  localhost: "127.0.0.1",
+  port: "27017"
 };

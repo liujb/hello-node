@@ -11,11 +11,11 @@ var prefixes = ["fd-pass", "gs-pass", "msg00", "fd-passport", "dache-mis-web", "
 var inArray = function (item, arr) {
   for (var i = arr.length - 1; i >= 0; i--) {
     if (item == arr[i]) {
-      return true
+      return true;
     }
-  };
+  }
   return false;
-}
+};
 
 var obj = {};
 var result = {};
@@ -24,9 +24,9 @@ lineReader.eachLine(srcFile, function (line, last) {
   var tmpArr = line.split(":");
   for (var i = tmpArr.length - 1; i >= 0; i--) {
     tmpArr[i] = tmpArr[i].trim();
-  };
-
-  for (var i = prefixes.length - 1; i >= 0; i--) {
+  }
+  var i = 0;
+  for (i = prefixes.length - 1; i >= 0; i--) {
     if (tmpArr[2].indexOf(prefixes[i]) >= 0) {
 
       if (Object.prototype.toString.call(obj[prefixes[i]], null) !== '[object Array]') {
@@ -37,7 +37,7 @@ lineReader.eachLine(srcFile, function (line, last) {
 
       break;
     }
-  };
+  }
 
 
 
@@ -48,7 +48,7 @@ lineReader.eachLine(srcFile, function (line, last) {
     for (var p in obj) {
 
       if (typeof obj[p] == "object") {
-        
+
       }
       str += obj[p].join("\r\n") + "\r\n\r\n";
 

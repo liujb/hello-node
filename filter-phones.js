@@ -2,7 +2,6 @@
  * 过滤电话号
  * @type {[type]}
  */
-
 var fs = require('fs');
 var lineReader = require("line-reader");
 

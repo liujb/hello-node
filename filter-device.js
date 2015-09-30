@@ -324,7 +324,7 @@ var inArray = function (item, arr) {
     if (arr[i] == item) {
       return true;
     }
-  };
+  }
   return false;
 };
 
@@ -332,8 +332,13 @@ var res1 = [];
 var res2 = [];
 for (var i = origin.length - 1; i >= 0; i--) {
   var tmp = origin[i];
-  inArray(tmp, api) ? res1.push(tmp) : res2.push(tmp);
-};
+  if (inArray(tmp, api)) {
+    res1.push(tmp);
+  } else {
+    res2.push(tmp);
+  }
+
+}
 
 console.log(res1.length);
 console.log(res2.length);

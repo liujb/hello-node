@@ -6,10 +6,10 @@
  */
 
 var db = require("./db.js");
-db.open(function(err, db) {
-	if (!err) {
-		console.log('connect to the mongodb');
-	} else {
-		console.log(err);
-	}
+db.open(function (err, db) {
+  if (!err) {
+    console.log('connect to the mongodb');
+  } else {
+    console.log(err);
+  }
 });

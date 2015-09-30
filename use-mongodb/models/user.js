@@ -10,12 +10,12 @@
  * @param {[type]} user [description]
  */
 
-var User = function(user) {
-	this.name = user.name;
-	this.password = user.password;
-	this.age = user.age;
-	this.sex = user.sex;
-	this.note = user.note;
+var User = function (user) {
+  this.name = user.name;
+  this.password = user.password;
+  this.age = user.age;
+  this.sex = user.sex;
+  this.note = user.note;
 };
 
 User.fn = User.prototype;
@@ -28,32 +28,32 @@ var db = require("../db.js");
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-User.fn.insert = function(callback) {
+User.fn.insert = function (callback) {
 
-	//create the object
-	var obj = {
-		name: this.name,
-		password: this.password,
-		age: this.age,
-		sex: this.sex,
-		note: this.note
-	};
+  //create the object
+  var obj = {
+    name: this.name,
+    password: this.password,
+    age: this.age,
+    sex: this.sex,
+    note: this.note
+  };
 
-	//open the database
-	db.open(function(err, db) {
-		//call the users collection
-		db.collection("users", function(err, coll) {
-			//insert action
-			coll.insert(obj, function(err, result) {
-				callback(null, result);
-				db.close(function(err, result) {
-					if (err) {
-						return callback(err);
-					} else {}
-				});
-			});
-		});
-	});
+  //open the database
+  db.open(function (err, db) {
+    //call the users collection
+    db.collection("users", function (err, coll) {
+      //insert action
+      coll.insert(obj, function (err, result) {
+        callback(null, result);
+        db.close(function (err, result) {
+          if (err) {
+            return callback(err);
+          } else {}
+        });
+      });
+    });
+  });
 };
 
 /**
@@ -62,19 +62,19 @@ User.fn.insert = function(callback) {
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-User.remove = function(user, callback) {
-	db.open(function(err, db) {
-		db.collection("users", function(err, coll) {
-			coll.remove(user, function(err, result) {
-				callback(null, result);
-				db.close(function(err, result) {
-					if (err) {
-						return callback(err);
-					} else {}
-				});
-			});
-		});
-	});
+User.remove = function (user, callback) {
+  db.open(function (err, db) {
+    db.collection("users", function (err, coll) {
+      coll.remove(user, function (err, result) {
+        callback(null, result);
+        db.close(function (err, result) {
+          if (err) {
+            return callback(err);
+          } else {}
+        });
+      });
+    });
+  });
 };
 
 /**
@@ -83,21 +83,21 @@ User.remove = function(user, callback) {
  * @param  {Function} callback  [description]
  * @return {[type]}             [description]
  */
-User.list = function(condition, callback) {
-	//console.log(condition)
-	db.open(function(err, db) {
-		db.collection("users", function(err, coll) {
-			coll.find(condition).toArray(function(err, list) {
-				//console.log(list);
-				callback(null, list);
-				db.close(function(err, result) {
-					if (err) {
-						return callback(err, result);
-					} else {}
-				});
-			});
-		});
-	});
+User.list = function (condition, callback) {
+  //console.log(condition)
+  db.open(function (err, db) {
+    db.collection("users", function (err, coll) {
+      coll.find(condition).toArray(function (err, list) {
+        //console.log(list);
+        callback(null, list);
+        db.close(function (err, result) {
+          if (err) {
+            return callback(err, result);
+          } else {}
+        });
+      });
+    });
+  });
 };
 
 module.exports = User;
