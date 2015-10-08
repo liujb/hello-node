@@ -325,7 +325,7 @@ var inArray = function (item, arr) {
       return true;
     }
   }
-  return false;
+  return false
 };
 
 var res1 = [];
